@@ -15,6 +15,9 @@ import logo from '../assets/logo.svg';
 
 // kulay ng bawat token sa table at badges
 function getTokenColor(token) {
+  if (token && (token.endsWith('_OPERATOR') || token.endsWith('_OP') || token === Tokens.OPERATOR)) {
+    return '#ffb072';
+  }
   switch (token) {
     case Tokens.KEYWORD:
       return '#c39bff';
@@ -27,11 +30,6 @@ function getTokenColor(token) {
     case Tokens.STRING_LIT:
     case Tokens.CHAR_LIT:
       return '#8ebcff';
-    case Tokens.OPERATOR:
-    case Tokens.ASSIGN_OP:
-    case Tokens.RELATIONAL_OP:
-    case Tokens.LINK_OP:
-      return '#ffb072';
     case Tokens.DELIMITER:
       return '#aab2c0';
     case Tokens.INDENT:
@@ -46,6 +44,9 @@ function getTokenColor(token) {
 
 // category para sa table badge at filtering
 function getTokenCategory(token) {
+  if (token && (token.endsWith('_OPERATOR') || token.endsWith('_OP') || token === Tokens.OPERATOR)) {
+    return 'operator';
+  }
   switch (token) {
     case Tokens.KEYWORD:
     case Tokens.DATA_TYPE:
@@ -57,11 +58,6 @@ function getTokenCategory(token) {
     case Tokens.STRING_LIT:
     case Tokens.CHAR_LIT:
       return 'literal';
-    case Tokens.OPERATOR:
-    case Tokens.ASSIGN_OP:
-    case Tokens.RELATIONAL_OP:
-    case Tokens.LINK_OP:
-      return 'operator';
     case Tokens.DELIMITER:
       return 'delimiter';
     case Tokens.INDENT:

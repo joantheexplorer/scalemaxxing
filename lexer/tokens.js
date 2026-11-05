@@ -7,14 +7,57 @@ export const Tokens = Object.freeze({
   FLOAT_LIT:     'FLOAT_LIT',
   STRING_LIT:    'STRING_LIT',
   CHAR_LIT:      'CHAR_LIT',
-  OPERATOR:      'OPERATOR',
-  ASSIGN_OP:     'ASSIGN_OP',
-  RELATIONAL_OP: 'RELATIONAL_OP',
-  LINK_OP:       'LINK_OP',
   DELIMITER:     'DELIMITER',
   INDENT:        'INDENT',
   DEDENT:        'DEDENT',
   ERROR:         'ERROR',
+
+  // Generic operator tokens (backward compatibility)
+  OPERATOR:      'OPERATOR',
+  ASSIGN_OP:     'ASSIGN_OP',
+  RELATIONAL_OP: 'RELATIONAL_OP',
+  LINK_OP:       'LINK_OP',
+
+  // Specific Arithmetic Operators
+  PLUS_OPERATOR:                  'PLUS_OPERATOR',
+  MINUS_OPERATOR:                 'MINUS_OPERATOR',
+  MULTIPLICATION_OPERATOR:        'MULTIPLICATION_OPERATOR',
+  DIVISION_OPERATOR:              'DIVISION_OPERATOR',
+  MODULO_OPERATOR:                'MODULO_OPERATOR',
+  EXPONENTIATION_OPERATOR:        'EXPONENTIATION_OPERATOR',
+  FLOOR_DIV_OPERATOR:             'FLOOR_DIV_OPERATOR',
+  POWER_OPERATOR:                 'POWER_OPERATOR',
+
+  // Specific Unary / Increment & Decrement Operators
+  INCREMENT_OPERATOR:             'INCREMENT_OPERATOR',
+  DECREMENT_OPERATOR:             'DECREMENT_OPERATOR',
+
+  // Specific Assignment Operators
+  ASSIGNMENT_OPERATOR:            'ASSIGNMENT_OPERATOR',
+  ADD_ASSIGN_OPERATOR:            'ADD_ASSIGN_OPERATOR',
+  SUB_ASSIGN_OPERATOR:            'SUB_ASSIGN_OPERATOR',
+  MULT_ASSIGN_OPERATOR:           'MULT_ASSIGN_OPERATOR',
+  DIV_ASSIGN_OPERATOR:            'DIV_ASSIGN_OPERATOR',
+  MOD_ASSIGN_OPERATOR:            'MOD_ASSIGN_OPERATOR',
+  EXP_ASSIGN_OPERATOR:            'EXP_ASSIGN_OPERATOR',
+  FLOOR_DIV_ASSIGN_OPERATOR:      'FLOOR_DIV_ASSIGN_OPERATOR',
+
+  // Specific Relational Operators
+  EQUAL_OPERATOR:                 'EQUAL_OPERATOR',
+  NOT_EQUAL_OPERATOR:             'NOT_EQUAL_OPERATOR',
+  LESS_THAN_OPERATOR:             'LESS_THAN_OPERATOR',
+  GREATER_THAN_OPERATOR:          'GREATER_THAN_OPERATOR',
+  LESS_THAN_OR_EQUAL_OPERATOR:    'LESS_THAN_OR_EQUAL_OPERATOR',
+  GREATER_THAN_OR_EQUAL_OPERATOR: 'GREATER_THAN_OR_EQUAL_OPERATOR',
+
+  // Specific Language-Specific Link Operators
+  BIDIRECTIONAL_LINK_OPERATOR:    'BIDIRECTIONAL_LINK_OPERATOR',
+  FLOW_LINK_OPERATOR:             'FLOW_LINK_OPERATOR',
+  NOT_OPERATOR:                   'NOT_OPERATOR',
+
+  // Lowercase convenience aliases
+  plus_operator:                  'PLUS_OPERATOR',
+  increment_operator:             'INCREMENT_OPERATOR',
 });
 
 // mga keywords ayon sa ScaleMAXXING Proposal spec
@@ -73,7 +116,6 @@ export const NOISE_WORDS = Object.freeze({
 });
 
 // helper pang-create ng lexeme object na may line, column, at optional error message
-// This is useful for error reporting and debugging during the lexical analysis phase of the compiler or interpreter.
 export function createLexeme(token, value, line = 1, col = 1, message = null) {
   const result = { token, value, line, col };
   if (message) {
@@ -81,4 +123,3 @@ export function createLexeme(token, value, line = 1, col = 1, message = null) {
   }
   return result;
 }
-// For the lexeme table

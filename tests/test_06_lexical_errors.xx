@@ -16,27 +16,31 @@ pure trailingDot = 10.
 pure badAttribute = 10.weight
 dim malformedFloat = 10.5.2
 
-# 5. Malformed scientific notation exponents
+# 5. Unknown data types and identifiers attached to unit expressions
+dim invalidType: ints = 10
+dim malformedUnitSuffix = 100[m]dd
+
+# 6. Malformed scientific notation exponents
 pure malformedExponent = 1e
 pure invalidExpSign = 1e+
 pure badExpFraction = 2.5e-
 pure fractionalExp = 1e2.5
 
-# 6. Unrecognized symbols and invalid characters
+# 7. Unrecognized symbols and invalid characters
 pure invalidSymbol1 = ~42
 dim invalidSymbol2 = $100
 pure ternaryCheck = flag ? 1 : 0
 pure bitwise = 5 | 2 & 1
 pure backtick = `invalid`
 
-# 7. Misaligned unindentation level (IndentationError)
+# 8. Misaligned unindentation level (IndentationError)
 when (status == 1):
         x = 10
       y = 20
 
-# 8. Valid recovery after lexical errors on subsequent lines
+# 9. Valid recovery after lexical errors on subsequent lines
 dim validRecovery = 500 [kg]
 emit(validRecovery)
 
-# 9. Unterminated multi-line block comment at EOF
+# 10. Unterminated multi-line block comment at EOF
 #* Unterminated multi-line comment that reaches end of file

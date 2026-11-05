@@ -298,6 +298,7 @@ export class LexicalAnalyzer {
 
   // sub-automaton para sa identifiers, keywords, datatypes, at noise words
   identifierAutomaton() {
+    const wordStart = this.index - 1;
     this.addChar();
     this.getChar();
 
@@ -307,6 +308,31 @@ export class LexicalAnalyzer {
     }
 
     const word = this.lexeme;
+    const sourceBeforeWord = this.input.slice(0, wordStart);
+    const previousNonWhitespace = sourceBeforeWord.trimEnd().slice(-1);
+
+    if (this.input[wordStart - 1] === ']') {
+      return createLexeme(
+        Tokens.ERROR,
+        word,
+        this.tokenStartLine,
+        this.tokenStartCol,
+        `Unexpected identifier '${word}' immediately after a closing bracket at line ${this.tokenStartLine}, col ${this.tokenStartCol}`
+      );
+    }
+
+    const currentLineSource = sourceBeforeWord.slice(sourceBeforeWord.lastIndexOf('\n') + 1);
+    const linePrevNonWs = currentLineSource.trimEnd().slice(-1);
+    if (linePrevNonWs === ':' && !DATA_TYPES[word]) {
+      return createLexeme(
+        Tokens.ERROR,
+        word,
+        this.tokenStartLine,
+        this.tokenStartCol,
+        `Unknown data type '${word}' at line ${this.tokenStartLine}, col ${this.tokenStartCol}`
+      );
+    }
+
     let tokenType = Tokens.IDENTIFIER;
     let value = word;
 
@@ -675,14 +701,14 @@ export class LexicalAnalyzer {
         if (this.nextChar === '+') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.INCREMENT_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
         if (this.nextChar === '=') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.ASSIGN_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.ADD_ASSIGN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.PLUS_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '-': {
@@ -691,14 +717,14 @@ export class LexicalAnalyzer {
         if (this.nextChar === '-') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.DECREMENT_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
         if (this.nextChar === '=') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.ASSIGN_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.SUB_ASSIGN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.MINUS_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '*': {
@@ -710,16 +736,16 @@ export class LexicalAnalyzer {
           if (this.nextChar === '=') {
             this.addChar();
             this.getChar();
-            return createLexeme(Tokens.ASSIGN_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+            return createLexeme(Tokens.EXP_ASSIGN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
           }
-          return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.EXPONENTIATION_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
         if (this.nextChar === '=') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.ASSIGN_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.MULT_ASSIGN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.MULTIPLICATION_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '/': {
@@ -731,16 +757,16 @@ export class LexicalAnalyzer {
           if (this.nextChar === '=') {
             this.addChar();
             this.getChar();
-            return createLexeme(Tokens.ASSIGN_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+            return createLexeme(Tokens.FLOOR_DIV_ASSIGN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
           }
-          return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.FLOOR_DIV_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
         if (this.nextChar === '=') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.ASSIGN_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.DIV_ASSIGN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.DIVISION_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '%': {
@@ -749,9 +775,9 @@ export class LexicalAnalyzer {
         if (this.nextChar === '=') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.ASSIGN_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.MOD_ASSIGN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.MODULO_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '=': {
@@ -760,14 +786,14 @@ export class LexicalAnalyzer {
         if (this.nextChar === '=') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.RELATIONAL_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.EQUAL_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
         if (this.nextChar === '>') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.LINK_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.FLOW_LINK_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.ASSIGN_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.ASSIGNMENT_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '<': {
@@ -779,11 +805,11 @@ export class LexicalAnalyzer {
           if (this.nextChar === '>') {
             this.addChar();
             this.getChar();
-            return createLexeme(Tokens.LINK_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+            return createLexeme(Tokens.BIDIRECTIONAL_LINK_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
           }
-          return createLexeme(Tokens.RELATIONAL_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.LESS_THAN_OR_EQUAL_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.RELATIONAL_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.LESS_THAN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '>': {
@@ -792,15 +818,15 @@ export class LexicalAnalyzer {
         if (this.nextChar === '=') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.RELATIONAL_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.GREATER_THAN_OR_EQUAL_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.RELATIONAL_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.GREATER_THAN_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '^': {
         this.addChar();
         this.getChar();
-        return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.POWER_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       case '!': {
@@ -809,9 +835,9 @@ export class LexicalAnalyzer {
         if (this.nextChar === '=') {
           this.addChar();
           this.getChar();
-          return createLexeme(Tokens.RELATIONAL_OP, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+          return createLexeme(Tokens.NOT_EQUAL_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
         }
-        return createLexeme(Tokens.OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
+        return createLexeme(Tokens.NOT_OPERATOR, this.lexeme, this.tokenStartLine, this.tokenStartCol);
       }
 
       // Dedicated block para sa period / leading-dot float
