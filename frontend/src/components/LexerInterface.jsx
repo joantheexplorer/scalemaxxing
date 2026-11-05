@@ -128,6 +128,20 @@ export default function LexerInterface({onAbout, setLightMode, setDarkMode}) {
   // Ctrl+Enter / Cmd+Enter shortcut pang-analyze
   const handleKeyDown = useCallback(
     (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const textarea = e.currentTarget;
+        textarea.setRangeText(
+          '\t',
+          textarea.selectionStart,
+          textarea.selectionEnd,
+          'end'
+        );
+        setSourceCode(textarea.value);
+        setIsAnalyzed(false);
+        return;
+      }
+
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         handleAnalyze();
