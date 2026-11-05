@@ -64,12 +64,26 @@ button {
 
 .light {
   min-height: 100%;
-  background-color: #ffffff;
+  background-color: #121234;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.light:focus {
+background-color:#ff7417;
+color: white;
 }
 
 .dark {
   min-height: 100%;
   background-color: #121234;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.dark:focus {
+background-color:#ff7417;
+color: white;
 }
 
 .container-button {
