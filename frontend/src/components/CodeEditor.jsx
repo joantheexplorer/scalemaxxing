@@ -33,7 +33,7 @@ function CodeEditor ({gutterRef, lineCount, textareaRef, sourceCode, handleInput
           Upload .txt
           <input
             type="file"
-            accept=".txt,.smx"
+            accept=".txt,.smx, .xx"
             onChange={handleFileUpload}
             style={{ display: 'none' }}
           />

@@ -73,6 +73,7 @@ export const NOISE_WORDS = Object.freeze({
 });
 
 // helper pang-create ng lexeme object na may line, column, at optional error message
+// This is useful for error reporting and debugging during the lexical analysis phase of the compiler or interpreter.
 export function createLexeme(token, value, line = 1, col = 1, message = null) {
   const result = { token, value, line, col };
   if (message) {
@@ -80,3 +81,4 @@ export function createLexeme(token, value, line = 1, col = 1, message = null) {
   }
   return result;
 }
+// For the lexeme table
